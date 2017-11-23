@@ -20,7 +20,7 @@
 const console    = require( 'timestamped-console' )( 'yyyy-mm-dd HH:MM' )
 const ImapClient = require( 'emailjs-imap-client' )
 const Envelope   = require( 'envelope' )
-
+const htmlToText = require('html-to-text')
 // built-in module dependencies
 const HTTPS      = require( 'https' )
 const URL        = require( 'url' )
@@ -333,11 +333,16 @@ async function mailToNotification( client, id )
 // assume most common MIME tree to recursively find plaintext in a multipart mail parsed by envelope
 function findTextContent( parts )
 {
+    //console.log("parts[0] "+JSON.stringify(parts['0']))
+    //console.log(parts.header.contentType.mime)
     // check if passed parts object contains desired plaintext content
-    if ( parts.header && parts.header.contentType && parts.header.contentType.mime == 'text/plain' )
+    if ( parts.header && parts.header.contentType )
     {
+        if(parts.header.contentType.mime == 'text/plain')
         // return plaintext
-        return parts['0']
+            return parts['0']
+        else if(parts.header.contentType.mime == 'text/html')
+            return htmlToText.fromString(parts['0'], {wordwrap: 130})
     }
     // more levels to check?
     else if ( parts['0'] && parts['0'].header )
@@ -348,6 +353,7 @@ function findTextContent( parts )
     // nothing found
     else
     {
+        
         // create error, but remove Stack trace
         const flatError = new Error( "Could not find text/plain content in MIME tree." )
         delete flatError.stack

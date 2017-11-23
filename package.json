@@ -16,15 +16,20 @@
         "url": "https://github.com/bitfasching/slack-email-webhook"
     },
     "keywords": [
-        "slack", "imap", "email", "webhook", "notification"
+        "slack",
+        "imap",
+        "email",
+        "webhook",
+        "notification"
     ],
     "engines": {
         "node": ">=7.6"
     },
     "dependencies": {
-        "timestamped-console": "~0.1.0",
         "emailjs-imap-client": "~2.0.5",
-        "envelope": "~1.0.6"
+        "envelope": "~1.0.6",
+        "html-to-text": "^3.3.0",
+        "timestamped-console": "~0.1.0"
     },
     "preferGlobal": false,
     "private": false
