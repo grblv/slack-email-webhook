@@ -333,15 +333,16 @@ async function mailToNotification( client, id )
 // assume most common MIME tree to recursively find plaintext in a multipart mail parsed by envelope
 function findTextContent( parts )
 {
-    //console.log("parts[0] "+JSON.stringify(parts['0']))
-    //console.log(parts.header.contentType.mime)
+    console.log("raw body "+JSON.stringify(parts))
+   
     // check if passed parts object contains desired plaintext content
-    if ( parts.header && parts.header.contentType )
+    if ( parts.header && parts.header.contentType && parts.header.contentType.mime.indexOf('text') > -1)
     {
+        console.log("MIME content type: "+parts.header.contentType.mime)
         if(parts.header.contentType.mime == 'text/plain')
         // return plaintext
             return parts['0']
-        else if(parts.header.contentType.mime == 'text/html')
+        else
             return htmlToText.fromString(parts['0'], {wordwrap: 130})
     }
     // more levels to check?
