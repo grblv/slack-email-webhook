@@ -24,6 +24,7 @@ const htmlToText = require('html-to-text')
 // built-in module dependencies
 const HTTPS      = require( 'https' )
 const URL        = require( 'url' )
+const fs         = require('fs');
 
 // load configuration, optionally from path set as environment variable
 const config = require( process.env.CONFIG || './config.js' )
@@ -253,7 +254,7 @@ async function mailToNotification( client, id )
     try
     {
         // try to fetch header and content from server
-        const messageItems = await client.listMessages( config.mailbox, id, [ 'envelope', `body[]<0.${config.sizeLimit}>` ] )
+        const messageItems = await client.listMessages( config.mailbox, id, [ 'envelope', `body[]` ] )
         header  = messageItems[0]['envelope']
         rawBody = messageItems[0]['body[]']
     }
@@ -333,7 +334,7 @@ async function mailToNotification( client, id )
 // assume most common MIME tree to recursively find plaintext in a multipart mail parsed by envelope
 function findTextContent( parts )
 {
-    console.log("raw body "+JSON.stringify(parts))
+    //console.log("raw body "+JSON.stringify(parts))
    
     // check if passed parts object contains desired plaintext content
     if ( parts.header && parts.header.contentType && parts.header.contentType.mime.indexOf('text') > -1)
@@ -342,8 +343,9 @@ function findTextContent( parts )
         if(parts.header.contentType.mime == 'text/plain')
         // return plaintext
             return parts['0']
-        else
+        else {
             return htmlToText.fromString(parts['0'], {wordwrap: 130})
+        }
     }
     // more levels to check?
     else if ( parts['0'] && parts['0'].header )

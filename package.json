@@ -5,7 +5,8 @@
     "author": "Nick Schwarzenberg <nick@bitfasching.de>",
     "license": "AGPLv3",
     "scripts": {
-        "start": "node slack-email-webhook.js"
+        "start": "node slack-email-webhook.js",
+        "startDebug": "node $NODE_DEBUG_OPTION slack-email-webhook.js"
     },
     "bin": {
         "slack-email-webhook": "./slack-email-webhook.js"
